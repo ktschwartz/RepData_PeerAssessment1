@@ -11,8 +11,29 @@ Steps Taken:
 - Load in the data
 - Count the number of missing values
 
-```{r Load_Data, echo=TRUE} 
+
+```r
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 library(ggplot2)
 unzip('~/Documents/Coursera/Reproducible_Research/repdata%2Fdata%2Factivity.zip')
 Act_Data <- read.csv('activity.csv')
@@ -27,7 +48,8 @@ Steps taken:
 - Plot a histogram of the daily totals.  
 - Add red and blue lines to the histogram showing the mean and median respectively.
 
-```{r Total_Steps_rmNA, echo = TRUE, warning = FALSE}
+
+```r
 Step_by_day <- Act_Data %>%
   group_by(date) %>%
   summarize(sum(steps, na.rm = TRUE))
@@ -44,9 +66,11 @@ ggplot(Step_by_day, aes(x = day, y = steps)) +
        x = 'Day', y = 'Total Steps')
 ```
 
+![](PA1_template_files/figure-html/Total_Steps_rmNA-1.png)<!-- -->
+
 ###The histogram shows the total steps taken on each day.
-1. The mean number of steps per day is `r toString(mean_steps)` steps and is shown with a red line on the histogram.
-2. The median number of steps per day is `r toString(median_steps)` steps and is shown with a blue line on the histogram.
+1. The mean number of steps per day is 9354.22950819672 steps and is shown with a red line on the histogram.
+2. The median number of steps per day is 10395 steps and is shown with a blue line on the histogram.
 
 
 ##What is the average daily activity pattern?
@@ -57,7 +81,8 @@ Steps taken:
 - Plot a line graph of the average steps over all the intervals.  
 - Add  a red star at the maximum.
 
-```{r Avg_Daily_Steps_rmNA, echo = TRUE}
+
+```r
 Step_by_interval <- Act_Data %>%
   group_by(interval) %>%
   summarize(mean(steps, na.rm = TRUE))
@@ -73,19 +98,22 @@ ggplot(Step_by_interval, aes(x = interval, y = Average_Steps)) +
        x = 'Interval', y = 'Average Steps')
 ```
 
+![](PA1_template_files/figure-html/Avg_Daily_Steps_rmNA-1.png)<!-- -->
+
 ###The average number of steps taken during each 5-minute interval (averaged across all days) is shown in the line graph.
-1. The maximum average number of steps occurs in the `r toString(max_interval$interval)`th 5-minute interval.  This interval has an average of `r toString(max_interval$Average_Steps)` steps. This point is shown on the graph with a red star.
+1. The maximum average number of steps occurs in the 835th 5-minute interval.  This interval has an average of 206.169811320755 steps. This point is shown on the graph with a red star.
 
 
 ##Imputing missing values
-There are `r toString(missing_num)` days/intervals where there are missing values. The presence of missing days may introduce bias into some calculations or summaries of the data.  **In order to better calculate summaries for the data, missing values will be replaced by the mean value for that interval rounded to the nearest integer.**
+There are 2304 days/intervals where there are missing values. The presence of missing days may introduce bias into some calculations or summaries of the data.  **In order to better calculate summaries for the data, missing values will be replaced by the mean value for that interval rounded to the nearest integer.**
 Steps taken:
 - For each missing value identify the interval, look up the average steps for that interval, add that value to the table.
 - Create a new table with the new data grouped by day and the total steps for each day calculated.
 - Calculate the mean and standard deviation of the daily totals.
 - Plot a histogram of the daily totals.  
 - Add red and blue lines to the histogram showing the mean and median respectively.
-```{r Total_Steps_imputed, echo = TRUE, warning = FALSE}
+
+```r
 Act_Data_Clean <- Act_Data
 
 for (i in 1:length(Act_Data_Clean$steps)){
@@ -111,9 +139,11 @@ ggplot(Step_by_day_clean, aes(x = day, y = steps)) +
        x = 'Day', y = 'Total Steps')
 ```
 
+![](PA1_template_files/figure-html/Total_Steps_imputed-1.png)<!-- -->
+
 ###The histogram shows the total steps taken on each day.
-1. The mean number of steps per day is `r toString(mean_steps_clean)` steps and is shown with a red line on the histogram.
-2. The median number of steps per day is `r toString(median_steps_clean)` steps and is shown with a blue line on the histogram.
+1. The mean number of steps per day is 10765.6393442623 steps and is shown with a red line on the histogram.
+2. The median number of steps per day is 10762 steps and is shown with a blue line on the histogram.
 3. Both the mean and median have increased compared to the data with the missing values ignored.  Interestigly in this dataset the mean and median are almost equal.  Imputing the missing data has increased the values of a lot of the totals for each day as well.
 
 
@@ -124,7 +154,8 @@ Steps taken:
 - Add a factor column with the category 'weekday' or 'weekend'
 - Group the data by interval and week category.  Calculate the average steps for each group.
 - Create two line graphs of interval vs. steps taken showing the comparison between weekdays and weekends.
-```{r Avg_Daily_Steps_weekday, echo = TRUE, warning = FALSE}
+
+```r
 Act_Data_Clean$date <- as.Date(Act_Data_Clean$date)
 Act_Data_Clean$weekday <- as.character(weekdays(Act_Data_Clean$date))
 Weekend <- function(weekday){
@@ -145,6 +176,22 @@ Step_by_interval_week$interval <- as.numeric(Step_by_interval_week$interval)
 ggplot(Step_by_interval_week, aes(x = interval, y = Average_Steps)) +
   geom_line() +
   facet_wrap(~Type)
+```
+
+![](PA1_template_files/figure-html/Avg_Daily_Steps_weekday-1.png)<!-- -->
+
+```r
   labs(x = 'Interval', y = 'Average Steps')
+```
+
+```
+## $x
+## [1] "Interval"
+## 
+## $y
+## [1] "Average Steps"
+## 
+## attr(,"class")
+## [1] "labels"
 ```
 ```
